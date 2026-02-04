@@ -3,13 +3,14 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" href="/timer.ico" type="image/x-icon" />
     <title>Pomodoro</title>
     <link rel="stylesheet" href="src/main.css" />
     <script type="module" src="src/main.ts" defer></script>
   </head>
   <body class="min-h-svh grid">
-    <main class="font-['Roboto'] bg-[#1e213f] text-zinc-100">
-      <section class="max-w-5xl h-full flex flex-col py-3.5">
+    <main class="relative font-['Roboto'] bg-[#1e213f] text-zinc-100">
+      <section class="max-w-5xl mx-auto h-full flex flex-col py-3.5">
         <h1 class="font-bold text-3xl text-center">Pomodoro</h1>
         <div class="flex gap-1.5 max-w-fit mx-auto rounded-full text-sm xs:text-base md:text-lg lg:text-xl bg-[#12182f] p-1.5 my-7" id="timerOptions">
           <label for="pomodoroBreak" class="block px-4 py-2 rounded-full bg-[#cb5e6c]">
@@ -33,13 +34,91 @@
             </svg>
             <div class="w-[40%] mx-auto aspect-square flex flex-col justify-center items-center gap-4">
               <span class="text-5xl">17:59</span>
-              <button type="button" class="tracking-tighter text-xl">Start</button>
+              <button type="button" class="text-xl uppercase" style="letter-spacing: 0.3rem">Start</button>
             </div>
           </div>
         </div>
 
         <div class="text-center">
-          <button type="button"><img src="/gear.svg" alt="Gear Icon" width="45" height="45" /></button>
+          <button type="button" class="icon-glow"><img src="/gear.svg" alt="Gear Icon" width="45" height="45" class="pointer-events-none" /></button>
+        </div>
+      </section>
+
+      <section class="modal fixed top-[50%] left-[50%] w-[90%] mx-auto bg-[#333333c4] backdrop-blur-md rounded-md shadow-md shadow-blue-600/70">
+        <div>
+          <div class="flex items-center justify-between px-4 py-4">
+            <h1 class="text-2xl font-bold">Settings</h1>
+            <button type="button"><img src="/xmark-circle.svg" class="pointer-events-none" alt="x icon" width="40" height="40" /></button>
+          </div>
+          <hr />
+
+          <form class="px-4 py-3">
+            <label class="spacing block uppercase text-lg font-semibold text-center md:text-start">Time (Minutes)</label>
+            <div class="flex flex-col md:flex-row gap-3 mt-4">
+              <div class="flex justify-between items-center">
+                <label for="pomodoroMinutes" class="block w-1/2">Pomodoro</label>
+                <div class="w-1/2 flex items-center justify-between bg-[#edf0fa7e] px-1.5 py-0.5 rounded-lg">
+                  <input type="number" name="pomodoroMinutes" class="w-[70%]" id="pomodoroMinutes" />
+                  <div class="flex flex-col items-end gap-1">
+                    <button type="button"><img src="/chevron.svg" alt="chevron up icon" class="pointer-events-none rotate-180" width="21" /></button>
+                    <button type="button"><img src="/chevron.svg" alt="chevron down icon" class="pointer-events-none" width="21" /></button>
+                  </div>
+                </div>
+              </div>
+              <div class="flex justify-between items-center">
+                <label for="shortBreakMinutes" class="block w-1/2">Short Break</label>
+                <div class="w-1/2 flex items-center justify-between bg-[#edf0fa7e] px-1.5 py-0.5 rounded-lg">
+                  <input type="number" name="shortBreakMinutes" class="w-[70%]" id="shortBreakMinutes" />
+                  <div class="flex flex-col items-end gap-1">
+                    <button type="button"><img src="/chevron.svg" alt="chevron up icon" class="pointer-events-none rotate-180" width="21" /></button>
+                    <button type="button"><img src="/chevron.svg" alt="chevron down icon" class="pointer-events-none" width="21" /></button>
+                  </div>
+                </div>
+              </div>
+              <div class="flex justify-between items-center">
+                <label for="longBreakMinutes" class="block w-1/2">Long Break</label>
+                <div class="w-1/2 flex items-center justify-between bg-[#edf0fa7e] px-1.5 py-0.5 rounded-lg">
+                  <input type="number" name="longBreakMinutes" class="w-[70%]" id="longBreakMinutes" />
+                  <div class="flex flex-col gap-1">
+                    <button type="button"><img src="/chevron.svg" alt="chevron up icon" class="pointer-events-none rotate-180" width="21" /></button>
+                    <button type="button"><img src="/chevron.svg" alt="chevron down icon" class="pointer-events-none" width="21" /></button>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <hr class="my-4" />
+            <label class="spacing block uppercase text-lg font-semibold text-center md:text-start mb-3">Font</label>
+            <div class="flex justify-center gap-3">
+              <label for="font1" class="relative p-3 rounded-full bg-zinc-900">
+                <input type="radio" name="fontChoice" class="absolute top-0 left-0 hidden" id="font1" />
+                Aa
+              </label>
+              <label for="font2" class="relative p-3 rounded-full bg-zinc-900">
+                <input type="radio" name="fontChoice" class="absolute top-0 left-0 hidden" id="font2" />
+                Aa
+              </label>
+              <label for="font3" class="relative p-3 rounded-full bg-zinc-900">
+                <input type="radio" name="fontChoice" class="absolute top-0 left-0 hidden" id="font3" />
+                Aa
+              </label>
+            </div>
+            <hr class="my-4" />
+            <label class="spacing block uppercase text-lg font-semibold text-center md:text-start mb-4">Color</label>
+            <div class="flex justify-center gap-5 mb-5">
+              <label for="color1" class="relative p-5 rounded-full bg-[#f76f70]">
+                <input type="radio" name="colorChoice" class="absolute top-0 left-0 hidden" id="font1" />
+              </label>
+              <label for="color2" class="relative p-5 rounded-full bg-[#73f0f7]">
+                <input type="radio" name="colorChoice" class="absolute top-0 left-0 hidden" id="font2" />
+              </label>
+              <label for="color3" class="relative p-5 rounded-full bg-[#da7ef6]">
+                <input type="radio" name="colorChoice" class="absolute top-0 left-0 hidden" id="font3" />
+              </label>
+            </div>
+            <div class="text-center relative apply-btn">
+              <button class="bg-[#f76f70] rounded-full px-8 py-2">Apply</button>
+            </div>
+          </form>
         </div>
       </section>
     </main>
