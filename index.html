@@ -12,16 +12,17 @@
     <main class="relative font-['Roboto'] bg-[#1e213f] text-zinc-100">
       <section class="max-w-5xl mx-auto h-full flex flex-col py-3.5">
         <h1 class="font-bold text-3xl text-center">Pomodoro</h1>
-        <div class="flex gap-1.5 max-w-fit mx-auto rounded-full text-sm xs:text-base md:text-lg lg:text-xl bg-[#12182f] p-1.5 my-7" id="timerOptions">
-          <label for="pomodoroBreak" class="block px-4 py-2 rounded-full bg-[#cb5e6c]">
-            <input class="hidden" type="radio" name="break-option" id="pomodoroBreak" />
+        <div class="relative flex gap-1.5 max-w-fit mx-auto rounded-full text-sm xs:text-base md:text-lg lg:text-xl bg-[#12182f] p-1.5 my-7" id="timerOptions">
+          <div id="glider" class="absolute top-1.5 bottom-1.5 left-1.5 bg-[#cb5e6c] rounded-full transition-all duration-300 ease-in-out"></div>
+          <label for="pomodoroBreak" class="relative z-10 block px-4 py-2 rounded-full">
+            <input class="hidden" type="radio" name="break-option" id="pomodoroBreak" checked />
             Pomodoro
           </label>
-          <label for="shortBreak" class="block px-4 py-2 rounded-full">
+          <label for="shortBreak" class="relative z-10 block px-4 py-2 rounded-full">
             <input class="hidden" type="radio" name="break-option" id="shortBreak" />
             Short Break
           </label>
-          <label for="longBreak" class="block px-4 py-2 rounded-full">
+          <label for="longBreak" class="relative z-10 block px-4 py-2 rounded-full">
             <input class="hidden" type="radio" name="break-option" id="longBreak" />
             Long Break
           </label>
@@ -29,12 +30,18 @@
         <!-- ANCHOR Pomodoro Itself -->
         <div class="flex-1 content-center">
           <div class="relative gird place-content-center aspect-square mx-auto max-w-75 md:max-w-100 rounded-[50%] bg-[#141930] custom-shadow">
-            <svg class="absolute top-0 left-0 w-full h-full" viewBox="0 0 200 200">
-              <circle class="progress-ring-circle" stroke="#00d2ff" stroke-width="4" fill="transparent" r="91" cx="100" cy="100" />
+            <svg class="absolute top-0 left-0 w-full h-full pointer-events-none" viewBox="0 0 200 200">
+              <circle class="progress-ring-circle" id="circleBar" stroke="#00d2ff" stroke-width="4" fill="transparent" r="90" cx="100" cy="100" />
             </svg>
             <div class="w-[40%] mx-auto aspect-square flex flex-col justify-center items-center gap-4">
-              <span class="text-5xl">17:59</span>
-              <button type="button" class="text-xl uppercase" style="letter-spacing: 0.3rem">Start</button>
+              <span class="text-5xl" id="timerDisplay">07:00</span>
+              <button type="button" class="text-xl uppercase cursor-pointer" id="startTimer" style="letter-spacing: 0.3rem">Start</button>
+              <div class="flex flex-col items-center gap-3">
+                <button type="button" class="text-xl uppercase cursor-pointer" id="pauseTimer" style="letter-spacing: 0.3rem" hidden>Pause</button>
+                <button type="button" class="cursor-pointer restart-btn" title="Reset Timer" hidden>
+                  <img src="/refresh-circle.svg" alt="Reset timer icon" class="pointer-events-none" width="40" height="40" />
+                </button>
+              </div>
             </div>
           </div>
         </div>
