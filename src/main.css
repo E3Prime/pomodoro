@@ -66,6 +66,18 @@ input[type="number"] {
   top: 30px;
 }
 
+.custom-time[data-state="error"] p {
+  color: #ff4d4d;
+  font-weight: 600;
+  visibility: visible;
+}
+
+.input-glow {
+  box-shadow:
+    0 0 7px azure,
+    inset 0 0 9px 9px rgb(32 32 32 / 0.3);
+}
+
 @theme {
   --breakpoint-xs: 25rem;
   --inner-right-corner-shadow: inset 4px 2px 3px azure;

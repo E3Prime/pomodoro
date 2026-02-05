@@ -47,55 +47,59 @@
         </div>
 
         <div class="text-center">
-          <button type="button" class="icon-glow"><img src="/gear.svg" alt="Gear Icon" width="45" height="45" class="pointer-events-none" /></button>
+          <button type="button" id="openSettings" class="icon-glow"><img src="/gear.svg" alt="Gear Icon" width="45" height="45" class="pointer-events-none" /></button>
         </div>
       </section>
 
-      <section class="modal fixed top-[50%] left-[50%] w-[90%] mx-auto bg-[#333333c4] backdrop-blur-md rounded-md shadow-md shadow-blue-600/70">
+      <section class="modal fixed top-[50%] left-[50%] w-[90%] mx-auto bg-[#333333c4] backdrop-blur-md rounded-md shadow-md shadow-blue-600/70 z-10">
         <div>
           <div class="flex items-center justify-between px-4 py-4">
             <h1 class="text-2xl font-bold">Settings</h1>
-            <button type="button"><img src="/xmark-circle.svg" class="pointer-events-none" alt="x icon" width="40" height="40" /></button>
+            <button type="button" id="closeSettings"><img src="/xmark-circle.svg" class="pointer-events-none" alt="x icon" width="40" height="40" /></button>
           </div>
           <hr />
 
-          <form class="px-4 py-3">
+          <!-- ANCHOR Settings -->
+          <form class="px-4 py-3" id="settings">
             <label class="spacing block uppercase text-lg font-semibold text-center md:text-start">Time (Minutes)</label>
-            <div class="flex flex-col md:flex-row gap-3 mt-4">
-              <div class="flex justify-between items-center">
-                <label for="pomodoroMinutes" class="block w-1/2">Pomodoro</label>
-                <div class="w-1/2 flex items-center justify-between bg-[#edf0fa7e] px-1.5 py-0.5 rounded-lg">
+            <div class="flex flex-col md:flex-row gap-3 mt-1.5" id="customTimes">
+              <div class="custom-time grid grid-cols-2 justify-between items-center" data-state="idle">
+                <p class="col-span-2 mb-1.5 invisible">Error</p>
+                <label for="pomodoroMinutes" class="block">Pomodoro</label>
+                <div class="flex items-center justify-between bg-[#edf0fa7e] px-1.5 py-0.5 rounded-lg">
                   <input type="number" name="pomodoroMinutes" class="w-[70%]" id="pomodoroMinutes" />
                   <div class="flex flex-col items-end gap-1">
-                    <button type="button"><img src="/chevron.svg" alt="chevron up icon" class="pointer-events-none rotate-180" width="21" /></button>
-                    <button type="button"><img src="/chevron.svg" alt="chevron down icon" class="pointer-events-none" width="21" /></button>
+                    <button type="button" id="pomodoroMinuteIncrement"><img src="/chevron.svg" alt="chevron up icon" class="pointer-events-none rotate-180" width="21" /></button>
+                    <button type="button" id="pomodoroMinuteDecrement"><img src="/chevron.svg" alt="chevron down icon" class="pointer-events-none" width="21" /></button>
                   </div>
                 </div>
               </div>
-              <div class="flex justify-between items-center">
-                <label for="shortBreakMinutes" class="block w-1/2">Short Break</label>
-                <div class="w-1/2 flex items-center justify-between bg-[#edf0fa7e] px-1.5 py-0.5 rounded-lg">
+              <div class="custom-time grid grid-cols-2 justify-between items-center" data-state="idle">
+                <p class="col-span-2 mb-1.5 invisible">Error</p>
+                <label for="shortBreakMinutes" class="block">Short Break</label>
+                <div class="flex items-center justify-between bg-[#edf0fa7e] px-1.5 py-0.5 rounded-lg">
                   <input type="number" name="shortBreakMinutes" class="w-[70%]" id="shortBreakMinutes" />
                   <div class="flex flex-col items-end gap-1">
-                    <button type="button"><img src="/chevron.svg" alt="chevron up icon" class="pointer-events-none rotate-180" width="21" /></button>
-                    <button type="button"><img src="/chevron.svg" alt="chevron down icon" class="pointer-events-none" width="21" /></button>
+                    <button type="button" id="shortBreakMinuteIncrement"><img src="/chevron.svg" alt="chevron up icon" class="pointer-events-none rotate-180" width="21" /></button>
+                    <button type="button" id="shortBreakMinuteDecrement"><img src="/chevron.svg" alt="chevron down icon" class="pointer-events-none" width="21" /></button>
                   </div>
                 </div>
               </div>
-              <div class="flex justify-between items-center">
-                <label for="longBreakMinutes" class="block w-1/2">Long Break</label>
-                <div class="w-1/2 flex items-center justify-between bg-[#edf0fa7e] px-1.5 py-0.5 rounded-lg">
+              <div class="custom-time grid grid-cols-2 justify-between items-center" data-state="idle">
+                <p class="col-span-2 mb-1.5 invisible">Error</p>
+                <label for="longBreakMinutes" class="block">Long Break</label>
+                <div class="flex items-center justify-between bg-[#edf0fa7e] px-1.5 py-0.5 rounded-lg">
                   <input type="number" name="longBreakMinutes" class="w-[70%]" id="longBreakMinutes" />
                   <div class="flex flex-col gap-1">
-                    <button type="button"><img src="/chevron.svg" alt="chevron up icon" class="pointer-events-none rotate-180" width="21" /></button>
-                    <button type="button"><img src="/chevron.svg" alt="chevron down icon" class="pointer-events-none" width="21" /></button>
+                    <button type="button" id="longBreakMinuteIncrement"><img src="/chevron.svg" alt="chevron up icon" class="pointer-events-none rotate-180" width="21" /></button>
+                    <button type="button" id="longBreakMinuteDecrement"><img src="/chevron.svg" alt="chevron down icon" class="pointer-events-none" width="21" /></button>
                   </div>
                 </div>
               </div>
             </div>
             <hr class="my-4" />
             <label class="spacing block uppercase text-lg font-semibold text-center md:text-start mb-3">Font</label>
-            <div class="flex justify-center gap-3">
+            <div class="flex justify-center gap-3" id="fontSelection">
               <label for="font1" class="relative p-3 rounded-full bg-zinc-900">
                 <input type="radio" name="fontChoice" class="absolute top-0 left-0 hidden" id="font1" />
                 Aa
@@ -111,7 +115,7 @@
             </div>
             <hr class="my-4" />
             <label class="spacing block uppercase text-lg font-semibold text-center md:text-start mb-4">Color</label>
-            <div class="flex justify-center gap-5 mb-5">
+            <div class="flex justify-center gap-5 mb-5" id="colorSelection">
               <label for="color1" class="relative p-5 rounded-full bg-[#f76f70]">
                 <input type="radio" name="colorChoice" class="absolute top-0 left-0 hidden" id="font1" />
               </label>
