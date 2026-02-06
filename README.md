@@ -11,7 +11,7 @@ A highly customizable productivity timer built to enforce effective study habits
 
 ## 🔗 Links
 
-- **Live Demo Link:**
+- **Live Demo Link:** https://e3prime.github.io/pomodoro
 
 ## ⏳ Pomodoro Focus Atmosphere Showcase
 
