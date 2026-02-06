@@ -6,31 +6,128 @@
   font-display: swap;
 }
 
+@font-face {
+  font-family: "Orbitron";
+  src: url("assets/fonts/Orbitron-Regular.woff2") format("woff2");
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Italianno";
+  src: url("assets/fonts/Italianno-Regular.woff2") format("woff2");
+  font-display: swap;
+}
+
+main[data-font-state="font1"] {
+  font-family: "Roboto", Arial, Helvetica, sans-serif;
+}
+
+main[data-font-state="font2"] {
+  font-family: "Orbitron", Arial, Helvetica, sans-serif;
+
+  .timer-options {
+    font-size: 0.7rem;
+  }
+}
+
+main[data-font-state="font3"] {
+  font-family: "Italianno", Arial, Helvetica, sans-serif;
+
+  .title {
+    font-size: 2rem;
+  }
+
+  .timer-options {
+    label {
+      padding: 4px 8px;
+      font-size: 1.7rem;
+    }
+  }
+
+  .settings {
+    font-size: 1.7rem;
+  }
+}
+
+main[data-time-color-state="color1"] {
+  .glider {
+    background-color: #f76f70;
+  }
+
+  .progress-ring-circle {
+    stroke: #f76f70;
+    filter: drop-shadow(0 0 11px #f76f70);
+  }
+
+  .restart-btn:hover {
+    filter: drop-shadow(0px 0px 9px #fff) drop-shadow(0px 0px 10px #f76f70) drop-shadow(0px 0px 20px #f76f70);
+  }
+
+  .icon-glow {
+    filter: drop-shadow(0px 0px 5px #fff) drop-shadow(0px 0px 7px #f76f70) drop-shadow(0px 0px 15px #f76f70);
+    &:hover {
+      filter: drop-shadow(0px 0px 9px #fff) drop-shadow(0px 0px 10px #f76f70) drop-shadow(0px 0px 20px #f76f70);
+    }
+  }
+}
+
+main[data-time-color-state="color2"] {
+  .glider {
+    background-color: #73f0f7;
+  }
+
+  .progress-ring-circle {
+    stroke: #73f0f7;
+    filter: drop-shadow(0 0 11px #00d2ff);
+  }
+
+  .restart-btn:hover {
+    filter: drop-shadow(0px 0px 9px #fff) drop-shadow(0px 0px 10px #73f0f7) drop-shadow(0px 0px 20px #73f0f7);
+  }
+
+  .icon-glow {
+    filter: drop-shadow(0px 0px 5px #fff) drop-shadow(0px 0px 7px #73f0f7) drop-shadow(0px 0px 15px #73f0f7);
+    &:hover {
+      filter: drop-shadow(0px 0px 9px #fff) drop-shadow(0px 0px 10px #73f0f7) drop-shadow(0px 0px 20px #73f0f7);
+    }
+  }
+}
+
+main[data-time-color-state="color3"] {
+  .glider {
+    background-color: #da7ef6;
+  }
+
+  .progress-ring-circle {
+    stroke: #da7ef6;
+    filter: drop-shadow(0 0 11px #da7ef6);
+  }
+
+  .restart-btn:hover {
+    filter: drop-shadow(0px 0px 9px #fff) drop-shadow(0px 0px 10px #da7ef6) drop-shadow(0px 0px 20px #da7ef6);
+  }
+
+  .icon-glow {
+    filter: drop-shadow(0px 0px 5px #fff) drop-shadow(0px 0px 7px #da7ef6) drop-shadow(0px 0px 15px #da7ef6);
+    &:hover {
+      filter: drop-shadow(0px 0px 9px #fff) drop-shadow(0px 0px 10px #da7ef6) drop-shadow(0px 0px 20px #da7ef6);
+    }
+  }
+}
+
 input[type="number"] {
   appearance: textfield;
   outline: none;
 }
 
+.restart-btn,
 .icon-glow {
-  filter: drop-shadow(0px 0px 5px #fff) drop-shadow(0px 0px 7px #0ff) drop-shadow(0px 0px 15px #0ff);
   transition:
     filter 0.3s ease,
     transform 0.3s ease;
   cursor: pointer;
 
   &:hover {
-    filter: drop-shadow(0px 0px 9px #fff) drop-shadow(0px 0px 10px #0ff) drop-shadow(0px 0px 20px #0ff);
-    transform: rotate(180deg);
-  }
-}
-
-.restart-btn {
-  transition:
-    filter 0.3s ease,
-    transform 0.3s ease;
-
-  &:hover {
-    filter: drop-shadow(0px 0px 9px #fff) drop-shadow(0px 0px 10px #0ff) drop-shadow(0px 0px 20px #0ff);
     transform: rotate(360deg);
   }
 }
@@ -40,13 +137,12 @@ input[type="number"] {
   transform: rotate(-90deg);
   transform-origin: center;
   stroke-linecap: round;
-  filter: drop-shadow(0 0 4px #00d2ff);
 }
 
 .custom-shadow {
   box-shadow:
-    -13px -11px 9px -7px rgb(255 253 253 / 0.7),
-    inset -7px -6px 17px 3px rgb(255 253 253 / 0.7);
+    -13px -11px 9px -7px rgb(255 255 255 / 0.9),
+    inset -7px -6px 17px 3px rgb(255 255 255 / 0.9);
 }
 
 .modal {
@@ -59,6 +155,10 @@ input[type="number"] {
 
   &.active {
     transform: translate(-50%, -50%);
+  }
+
+  .modal-inner-shadow {
+    box-shadow: inset 0 0 0.7rem 0.3rem azure;
   }
 }
 

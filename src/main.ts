@@ -1,3 +1,6 @@
+import {Particle} from "./Particle.ts";
+import audioPath from "./assets/times_up.mp3";
+
 const formatInputMinutes = (e: Event) => {
   const target = e.target as HTMLInputElement;
   if (target.value.length > 2) target.value = target.value.slice(0, 2);
@@ -90,6 +93,13 @@ const animateCircleBar = () => {
   circleBar.style.strokeDashoffset = offset.toString();
 };
 
+const setInitialMinuteFontColor = () => {
+  mainElem.dataset.fontState = "font1";
+  mainElem.dataset.timeColorState = "color1";
+  shortBreakMinutes.value = "15";
+  longBreakMinutes.value = "30";
+};
+
 const formatTime = (seconds: number) => {
   const mins = Math.floor(seconds / 60);
   const secs = seconds % 60;
@@ -103,7 +113,29 @@ const stopInterval = () => {
   }
 };
 
+const playTimerAudio = () => {
+  try {
+    if (audio) audio.play();
+  } catch (e) {
+    console.error("There was an issue in playing the audio", e);
+  }
+};
+const pauseTimerAudio = () => {
+  try {
+    if (audio && !audio.paused) audio.pause;
+  } catch (e) {
+    console.error("There was an issue in pausing the audio", e);
+  }
+};
+
+const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
+
+// DOM Variables
+const mainElem = document.querySelector("main") as HTMLElement;
+const canvas = mainElem.firstElementChild as HTMLCanvasElement;
+const ctx = canvas.getContext("2d") as CanvasRenderingContext2D;
 const timerOptions = document.getElementById("timerOptions") as HTMLElement;
+const [pomodoroBreak, shortBreak, longBreak] = [...timerOptions.querySelectorAll("input")] as HTMLInputElement[];
 const glider = timerOptions.querySelector("#glider") as HTMLElement;
 const timerDisplay = document.getElementById("timerDisplay") as HTMLSpanElement;
 const startTimerBtn = document.getElementById("startTimer") as HTMLButtonElement;
@@ -122,23 +154,37 @@ const longBreakErrorState = customTimes.children[2] as HTMLDivElement;
 const pomodoroErrorElem = pomodoroErrorState.firstElementChild as HTMLParagraphElement;
 const shortBreakErrorElem = shortBreakErrorState.firstElementChild as HTMLParagraphElement;
 const longBreakErrorElem = longBreakErrorState.firstElementChild as HTMLParagraphElement;
-const [font1, font2, font3] = [...settings.querySelectorAll("#fontSelection input")] as HTMLInputElement[];
-const [color1, color2, color3] = [...settings.querySelectorAll("#colorSelection input")] as HTMLInputElement[];
-console.log(font1, color1);
+const [font1, font2] = [...settings.querySelectorAll("#fontSelection input")] as HTMLInputElement[];
+const [color1, color2] = [...settings.querySelectorAll("#colorSelection input")] as HTMLInputElement[];
 
+// ANCHOR Script Variables
 const circleRadius = circleBar.r.baseVal.value;
 const circumference = circleRadius * 2 * Math.PI;
-let time = 7;
-let totalTime = time * 60;
-let secondsRemaining = time * 60;
+let pomodoroTime = 7;
+let shortBreakTime = 15;
+let longBreakTime = 30;
+let totalTime = pomodoroTime * 60;
+let secondsRemaining = pomodoroTime * 60;
 let timerInterval: ReturnType<typeof setInterval> | null = null;
+let eventsEnabled = true;
+const audio = new Audio(audioPath);
+const canvasState = {width: 0, height: 0};
+const particles = Array.from({length: 70}, () => new Particle(canvasState));
+const resizeObserver = new ResizeObserver((entries) => canvasResize(entries));
+resizeObserver.observe(canvas);
 
+// ANCHOR Running Events
+setInitialMinuteFontColor();
 initialGlide();
+animate();
 timerOptions.addEventListener("change", setTimeOption);
 startTimerBtn.addEventListener("click", startTimer);
 pauseTimerBtn.addEventListener("click", pauseTimer);
 restartTimerBtn.addEventListener("click", restartTimer);
-openSettings.addEventListener("click", () => modal.classList.add("active"));
+openSettings.addEventListener("click", () => {
+  if (!eventsEnabled) return;
+  modal.classList.add("active");
+});
 closeSettings.addEventListener("click", () => modal.classList.remove("active"));
 customTimes.addEventListener("input", formatInputMinutes);
 customTimes.addEventListener("focusin", inputMinutesGlowup);
@@ -148,9 +194,34 @@ settings.addEventListener("submit", updateSettings);
 
 function updateSettings(e: SubmitEvent) {
   e.preventDefault();
+  if (pomodoroMinutes.value === "") {
+    pomodoroErrorState.dataset.state = "error";
+    return;
+  }
+  if (pomodoroErrorState.dataset.state !== "idle" || shortBreakErrorState.dataset.state !== "idle" || longBreakErrorState.dataset.state !== "idle") return;
+
+  pomodoroTime = parseInt(pomodoroMinutes.value);
+  shortBreakTime = parseInt(shortBreakMinutes.value);
+  longBreakTime = parseInt(longBreakMinutes.value);
+  const currentTime = pomodoroBreak.checked ? pomodoroTime : shortBreak.checked ? shortBreakTime : longBreakTime;
+  timerDisplay.textContent = currentTime < 10 ? String(currentTime).padStart(2, "0") + ":00" : String(currentTime) + ":00";
+  totalTime = currentTime * 60;
+  secondsRemaining = currentTime * 60;
+  restartTimer();
+
+  if (font1.checked) mainElem.dataset.fontState = "font1";
+  else if (font2.checked) mainElem.dataset.fontState = "font2";
+  else mainElem.dataset.fontState = "font3";
+
+  if (color1.checked) mainElem.dataset.timeColorState = "color1";
+  else if (color2.checked) mainElem.dataset.timeColorState = "color2";
+  else mainElem.dataset.timeColorState = "color3";
+
+  modal.classList.remove("active");
 }
 
 function setTimeOption(e: Event) {
+  if (!eventsEnabled) return;
   if (!(e.target instanceof HTMLInputElement)) return;
   stopInterval();
   pauseTimerBtn.disabled = true;
@@ -167,27 +238,37 @@ function setTimeOption(e: Event) {
 
   switch (target.id) {
     case "pomodoroBreak":
-      time = 7;
-      totalTime = time * 60;
-      timerDisplay.textContent = time < 10 ? String(time).padStart(2, "0") + ":00" : String(time) + ":00";
+      const time1 = pomodoroTime;
+      totalTime = pomodoroTime * 60;
+      timerDisplay.textContent = time1 < 10 ? String(time1).padStart(2, "0") + ":00" : String(time1) + ":00";
       break;
     case "shortBreak":
-      time = 15;
-      totalTime = time * 60;
-      timerDisplay.textContent = time < 10 ? String(time).padStart(2, "0") + ":00" : String(time) + ":00";
+      const time2 = shortBreakTime;
+      totalTime = shortBreakTime * 60;
+      timerDisplay.textContent = time2 < 10 ? String(time2).padStart(2, "0") + ":00" : String(time2) + ":00";
       break;
     case "longBreak":
-      time = 30;
-      totalTime = time * 60;
-      timerDisplay.textContent = String(time) + ":00";
+      const time3 = longBreakTime;
+      totalTime = longBreakTime * 60;
+      timerDisplay.textContent = String(time3) + ":00";
       break;
   }
 
-  secondsRemaining = time * 60;
+  if (pomodoroBreak.checked) {
+    totalTime = pomodoroTime * 60;
+    secondsRemaining = pomodoroTime * 60;
+  } else if (shortBreak.checked) {
+    totalTime = shortBreakTime * 60;
+    secondsRemaining = shortBreakTime * 60;
+  } else if (longBreak.checked) {
+    totalTime = longBreakTime * 60;
+    secondsRemaining = longBreakTime * 60;
+  }
 }
 
-function startTimer() {
+async function startTimer() {
   stopInterval();
+  const currentTime = pomodoroBreak.checked ? pomodoroTime : shortBreak.checked ? shortBreakTime : longBreakTime;
   startTimerBtn.disabled = true;
   startTimerBtn.setAttribute("hidden", "");
   pauseTimerBtn.removeAttribute("hidden");
@@ -195,19 +276,31 @@ function startTimer() {
   restartTimerBtn.removeAttribute("hidden");
   restartTimerBtn.disabled = false;
 
-  if (secondsRemaining <= 0) secondsRemaining = time * 60;
-
   timerInterval = setInterval(() => {
     --secondsRemaining;
     if (secondsRemaining >= 0) {
       const formattedTime = formatTime(secondsRemaining);
       timerDisplay.textContent = formattedTime;
-    } else stopInterval();
-    animateCircleBar();
+      animateCircleBar();
+    } else {
+      stopInterval();
+      timesUp(currentTime);
+    }
   }, 1000);
 }
 
+async function timesUp(currentTime: number) {
+  eventsEnabled = !eventsEnabled;
+  playTimerAudio();
+  await sleep(4000);
+  pauseTimerAudio();
+  secondsRemaining = currentTime * 60;
+  eventsEnabled = !eventsEnabled;
+  restartTimer();
+}
+
 function pauseTimer() {
+  if (!eventsEnabled) return;
   stopInterval();
   pauseTimerBtn.disabled = true;
   pauseTimerBtn.setAttribute("hidden", "");
@@ -218,9 +311,11 @@ function pauseTimer() {
 }
 
 function restartTimer() {
+  if (!eventsEnabled) return;
   stopInterval();
-  secondsRemaining = time * 60;
-  timerDisplay.textContent = time < 10 ? String(time).padStart(2, "0") + ":00" : String(time) + ":00";
+  const currentTime = pomodoroBreak.checked ? pomodoroTime : shortBreak.checked ? shortBreakTime : longBreakTime;
+  secondsRemaining = currentTime * 60;
+  timerDisplay.textContent = currentTime < 10 ? String(currentTime).padStart(2, "0") + ":00" : String(currentTime) + ":00";
   pauseTimerBtn.disabled = true;
   pauseTimerBtn.setAttribute("hidden", "");
   restartTimerBtn.disabled = true;
@@ -270,4 +365,32 @@ function validateMinutes(e: FocusEvent) {
       longBreakErrorElem.textContent = "Value must be between 30 & 60!";
     } else longBreakErrorState.dataset.state = "idle";
   }
+}
+
+function canvasResize(entries: ResizeObserverEntry[]) {
+  const entry = entries[0];
+  const {width: cssWidth, height: cssHeight} = entry.contentRect;
+  const dpr = window.devicePixelRatio || 1;
+
+  canvas.width = Math.floor(cssWidth * dpr);
+  canvas.height = Math.floor(cssHeight * dpr);
+
+  ctx.scale(dpr, dpr);
+
+  canvasState.width = cssWidth;
+  canvasState.height = cssHeight;
+}
+
+function animate() {
+  const w = canvasState.width;
+  const h = canvasState.height;
+
+  ctx.clearRect(0, 0, w, h);
+
+  particles.forEach((p) => {
+    p.update();
+    p.draw(ctx);
+  });
+
+  requestAnimationFrame(() => animate());
 }

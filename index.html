@@ -9,21 +9,22 @@
     <script type="module" src="src/main.ts" defer></script>
   </head>
   <body class="min-h-svh grid">
-    <main class="relative font-['Roboto'] bg-[#1e213f] text-zinc-100">
+    <main class="relative bg-radial from-[#f5f5f5] to-[#000033] text-zinc-100">
+      <canvas class="absolute top-0 left-0 w-full h-full" id="particleCanvas"></canvas>
       <section class="max-w-5xl mx-auto h-full flex flex-col py-3.5">
-        <h1 class="font-bold text-3xl text-center">Pomodoro</h1>
-        <div class="relative flex gap-1.5 max-w-fit mx-auto rounded-full text-sm xs:text-base md:text-lg lg:text-xl bg-[#12182f] p-1.5 my-7" id="timerOptions">
-          <div id="glider" class="absolute top-1.5 bottom-1.5 left-1.5 bg-[#cb5e6c] rounded-full transition-all duration-300 ease-in-out"></div>
+        <h1 class="title font-bold text-3xl text-center">Pomodoro</h1>
+        <div class="timer-options relative flex gap-1.5 max-w-fit mx-auto rounded-full text-sm xs:text-base md:text-lg lg:text-xl bg-[#12182f] p-1.5 my-7" id="timerOptions">
+          <div id="glider" class="glider absolute top-1.5 bottom-1.5 left-1.5 rounded-full transition-all duration-300 ease-in-out"></div>
           <label for="pomodoroBreak" class="relative z-10 block px-4 py-2 rounded-full">
-            <input class="hidden" type="radio" name="break-option" id="pomodoroBreak" checked />
+            <input class="hidden" type="radio" name="break-option" id="pomodoroBreak" autocomplete="off" checked />
             Pomodoro
           </label>
           <label for="shortBreak" class="relative z-10 block px-4 py-2 rounded-full">
-            <input class="hidden" type="radio" name="break-option" id="shortBreak" />
+            <input class="hidden" type="radio" name="break-option" id="shortBreak" autocomplete="off" />
             Short Break
           </label>
           <label for="longBreak" class="relative z-10 block px-4 py-2 rounded-full">
-            <input class="hidden" type="radio" name="break-option" id="longBreak" />
+            <input class="hidden" type="radio" name="break-option" id="longBreak" autocomplete="off" />
             Long Break
           </label>
         </div>
@@ -31,7 +32,7 @@
         <div class="flex-1 content-center">
           <div class="relative gird place-content-center aspect-square mx-auto max-w-75 md:max-w-100 rounded-[50%] bg-[#141930] custom-shadow">
             <svg class="absolute top-0 left-0 w-full h-full pointer-events-none" viewBox="0 0 200 200">
-              <circle class="progress-ring-circle" id="circleBar" stroke="#00d2ff" stroke-width="4" fill="transparent" r="90" cx="100" cy="100" />
+              <circle class="progress-ring-circle" id="circleBar" stroke-width="4" fill="transparent" r="90" cx="100" cy="100" />
             </svg>
             <div class="w-[40%] mx-auto aspect-square flex flex-col justify-center items-center gap-4">
               <span class="text-5xl" id="timerDisplay">07:00</span>
@@ -51,8 +52,8 @@
         </div>
       </section>
 
-      <section class="modal fixed top-[50%] left-[50%] w-[90%] mx-auto bg-[#333333c4] backdrop-blur-md rounded-md shadow-md shadow-blue-600/70 z-10">
-        <div>
+      <section class="modal fixed top-[50%] left-[50%] w-[90%] mx-auto max-w-184 bg-[#333333c4] backdrop-blur-md rounded-md shadow-lg shadow-indigo-50/70 z-10">
+        <div class="modal-inner-shadow rounded-md">
           <div class="flex items-center justify-between px-4 py-4">
             <h1 class="text-2xl font-bold">Settings</h1>
             <button type="button" id="closeSettings"><img src="/xmark-circle.svg" class="pointer-events-none" alt="x icon" width="40" height="40" /></button>
@@ -60,12 +61,12 @@
           <hr />
 
           <!-- ANCHOR Settings -->
-          <form class="px-4 py-3" id="settings">
+          <form class="settings px-4 py-3" id="settings">
             <label class="spacing block uppercase text-lg font-semibold text-center md:text-start">Time (Minutes)</label>
-            <div class="flex flex-col md:flex-row gap-3 mt-1.5" id="customTimes">
-              <div class="custom-time grid grid-cols-2 justify-between items-center" data-state="idle">
-                <p class="col-span-2 mb-1.5 invisible">Error</p>
-                <label for="pomodoroMinutes" class="block">Pomodoro</label>
+            <div class="flex flex-col md:flex-row justify-between gap-3 mt-1.5" id="customTimes">
+              <div class="custom-time grid grid-cols-2 md:grid-cols-1 justify-between items-center" data-state="idle">
+                <p class="col-span-2 md:col-span-1 mb-1.5 invisible">You must provide a value!</p>
+                <label for="pomodoroMinutes" class="block md:my-2.5">Pomodoro</label>
                 <div class="flex items-center justify-between bg-[#edf0fa7e] px-1.5 py-0.5 rounded-lg">
                   <input type="number" name="pomodoroMinutes" class="w-[70%]" id="pomodoroMinutes" />
                   <div class="flex flex-col items-end gap-1">
@@ -74,22 +75,22 @@
                   </div>
                 </div>
               </div>
-              <div class="custom-time grid grid-cols-2 justify-between items-center" data-state="idle">
-                <p class="col-span-2 mb-1.5 invisible">Error</p>
-                <label for="shortBreakMinutes" class="block">Short Break</label>
+              <div class="custom-time grid grid-cols-2 md:grid-cols-1 justify-between items-center" data-state="idle">
+                <p class="col-span-2 md:col-span-1 mb-1.5 invisible">Error</p>
+                <label for="shortBreakMinutes" class="block md:my-2.5">Short Break</label>
                 <div class="flex items-center justify-between bg-[#edf0fa7e] px-1.5 py-0.5 rounded-lg">
-                  <input type="number" name="shortBreakMinutes" class="w-[70%]" id="shortBreakMinutes" />
+                  <input type="number" name="shortBreakMinutes" class="w-[70%]" id="shortBreakMinutes" value="15" />
                   <div class="flex flex-col items-end gap-1">
                     <button type="button" id="shortBreakMinuteIncrement"><img src="/chevron.svg" alt="chevron up icon" class="pointer-events-none rotate-180" width="21" /></button>
                     <button type="button" id="shortBreakMinuteDecrement"><img src="/chevron.svg" alt="chevron down icon" class="pointer-events-none" width="21" /></button>
                   </div>
                 </div>
               </div>
-              <div class="custom-time grid grid-cols-2 justify-between items-center" data-state="idle">
-                <p class="col-span-2 mb-1.5 invisible">Error</p>
-                <label for="longBreakMinutes" class="block">Long Break</label>
+              <div class="custom-time grid grid-cols-2 md:grid-cols-1 justify-between items-center" data-state="idle">
+                <p class="col-span-2 md:col-span-1 mb-1.5 invisible">Error</p>
+                <label for="longBreakMinutes" class="block md:my-2.5">Long Break</label>
                 <div class="flex items-center justify-between bg-[#edf0fa7e] px-1.5 py-0.5 rounded-lg">
-                  <input type="number" name="longBreakMinutes" class="w-[70%]" id="longBreakMinutes" />
+                  <input type="number" name="longBreakMinutes" class="w-[70%]" id="longBreakMinutes" value="30" />
                   <div class="flex flex-col gap-1">
                     <button type="button" id="longBreakMinuteIncrement"><img src="/chevron.svg" alt="chevron up icon" class="pointer-events-none rotate-180" width="21" /></button>
                     <button type="button" id="longBreakMinuteDecrement"><img src="/chevron.svg" alt="chevron down icon" class="pointer-events-none" width="21" /></button>
@@ -98,34 +99,86 @@
               </div>
             </div>
             <hr class="my-4" />
-            <label class="spacing block uppercase text-lg font-semibold text-center md:text-start mb-3">Font</label>
-            <div class="flex justify-center gap-3" id="fontSelection">
-              <label for="font1" class="relative p-3 rounded-full bg-zinc-900">
-                <input type="radio" name="fontChoice" class="absolute top-0 left-0 hidden" id="font1" />
-                Aa
-              </label>
-              <label for="font2" class="relative p-3 rounded-full bg-zinc-900">
-                <input type="radio" name="fontChoice" class="absolute top-0 left-0 hidden" id="font2" />
-                Aa
-              </label>
-              <label for="font3" class="relative p-3 rounded-full bg-zinc-900">
-                <input type="radio" name="fontChoice" class="absolute top-0 left-0 hidden" id="font3" />
-                Aa
-              </label>
+            <div class="md:flex justify-between items-center">
+              <label class="spacing block uppercase text-lg font-semibold text-center md:text-start mb-3">Font</label>
+              <div class="flex justify-center gap-3" id="fontSelection">
+                <div class="relative">
+                  <input type="radio" name="fontChoice" id="font1" class="peer sr-only" autocomplete="off" checked />
+                  <label
+                    for="font1"
+                    class="font-[Roboto] flex items-center justify-center w-11 h-11 rounded-full bg-zinc-900/60 text-white cursor-pointer transition-all ring-offset-2 ring-offset-zinc-900 peer-checked:bg-zinc-800 peer-checked:ring-2 peer-checked:ring-white peer-checked:[&_span]:hidden peer-checked:[&_svg]:block">
+                    <span class="text-xl">Aa</span>
+
+                    <svg xmlns="http://www.w3.org/2000/svg" class="hidden w-9 h-9" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+                    </svg>
+                  </label>
+                </div>
+
+                <div class="relative">
+                  <input type="radio" name="fontChoice" id="font2" class="peer sr-only" autocomplete="off" />
+                  <label
+                    for="font2"
+                    class="font-[Orbitron] flex items-center justify-center w-11 h-11 rounded-full bg-zinc-900/60 text-white cursor-pointer transition-all ring-offset-2 ring-offset-zinc-900 peer-checked:bg-zinc-800 peer-checked:ring-2 peer-checked:ring-white peer-checked:[&_span]:hidden peer-checked:[&_svg]:block">
+                    <span class="text-lg font-bold">Aa</span>
+                    <svg xmlns="http://www.w3.org/2000/svg" class="hidden w-9 h-9" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+                    </svg>
+                  </label>
+                </div>
+
+                <div class="relative">
+                  <input type="radio" name="fontChoice" id="font3" class="peer sr-only" autocomplete="off" />
+                  <label
+                    for="font3"
+                    class="font-[Italianno] flex items-center justify-center w-11 h-11 rounded-full bg-zinc-900/60 text-white cursor-pointer transition-all ring-offset-2 ring-offset-zinc-900 peer-checked:bg-zinc-800 peer-checked:ring-2 peer-checked:ring-white peer-checked:[&_span]:hidden peer-checked:[&_svg]:block">
+                    <span class="text-3xl">Aa</span>
+                    <svg xmlns="http://www.w3.org/2000/svg" class="hidden w-9 h-9" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+                    </svg>
+                  </label>
+                </div>
+              </div>
             </div>
             <hr class="my-4" />
-            <label class="spacing block uppercase text-lg font-semibold text-center md:text-start mb-4">Color</label>
-            <div class="flex justify-center gap-5 mb-5" id="colorSelection">
-              <label for="color1" class="relative p-5 rounded-full bg-[#f76f70]">
-                <input type="radio" name="colorChoice" class="absolute top-0 left-0 hidden" id="font1" />
-              </label>
-              <label for="color2" class="relative p-5 rounded-full bg-[#73f0f7]">
-                <input type="radio" name="colorChoice" class="absolute top-0 left-0 hidden" id="font2" />
-              </label>
-              <label for="color3" class="relative p-5 rounded-full bg-[#da7ef6]">
-                <input type="radio" name="colorChoice" class="absolute top-0 left-0 hidden" id="font3" />
-              </label>
+            <div class="md:flex justify-between items-center">
+              <label class="spacing block uppercase text-lg font-semibold text-center md:text-start mb-4">Color</label>
+              <div class="flex justify-center gap-5 mb-5" id="colorSelection">
+                <div class="relative">
+                  <input type="radio" name="colorChoice" id="color1" class="peer sr-only" autocomplete="off" checked />
+                  <label
+                    for="color1"
+                    class="flex items-center justify-center p-3 rounded-full bg-[#f76f70] cursor-pointer text-transparent transition-all duration-400 shadow-[#f76f70] ring-offset-2 hover:shadow-md peer-checked:text-white peer-checked:ring-2 peer-checked:ring-[#f76f70] peer-checked:shadow-xl peer-checked:scale-110">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+                    </svg>
+                  </label>
+                </div>
+
+                <div class="relative">
+                  <input type="radio" name="colorChoice" id="color2" class="peer sr-only" autocomplete="off" />
+                  <label
+                    for="color2"
+                    class="flex items-center justify-center p-3 rounded-full bg-[#73f0f7] cursor-pointer text-transparent transition-all duration-400 shadow-[#73f0f7] ring-offset-2 hover:shadow-md peer-checked:text-white peer-checked:ring-2 peer-checked:ring-[#73f0f7] peer-checked:shadow-xl peer-checked:scale-110">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+                    </svg>
+                  </label>
+                </div>
+
+                <div class="relative">
+                  <input type="radio" name="colorChoice" id="color3" class="peer sr-only" autocomplete="off" />
+                  <label
+                    for="color3"
+                    class="flex items-center justify-center p-3 rounded-full bg-[#da7ef6] cursor-pointer text-transparent transition-all duration-400 shadow-[#da7ef6] ring-offset-2 hover:shadow-md peer-checked:text-white peer-checked:ring-2 peer-checked:ring-[#da7ef6] peer-checked:shadow-lg peer-checked:scale-110">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+                    </svg>
+                  </label>
+                </div>
+              </div>
             </div>
+
             <div class="text-center relative apply-btn">
               <button class="bg-[#f76f70] rounded-full px-8 py-2">Apply</button>
             </div>
