@@ -96,6 +96,7 @@ const animateCircleBar = () => {
 const setInitialMinuteFontColor = () => {
   mainElem.dataset.fontState = "font1";
   mainElem.dataset.timeColorState = "color1";
+  pomodoroMinutes.value = "7";
   shortBreakMinutes.value = "15";
   longBreakMinutes.value = "30";
 };
@@ -187,10 +188,6 @@ settings.addEventListener("submit", updateSettings);
 
 function updateSettings(e: SubmitEvent) {
   e.preventDefault();
-  if (pomodoroMinutes.value === "") {
-    pomodoroErrorState.dataset.state = "error";
-    return;
-  }
   if (pomodoroErrorState.dataset.state !== "idle" || shortBreakErrorState.dataset.state !== "idle" || longBreakErrorState.dataset.state !== "idle") return;
 
   pomodoroTime = parseInt(pomodoroMinutes.value);
