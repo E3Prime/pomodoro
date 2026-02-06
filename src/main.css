@@ -178,6 +178,20 @@ input[type="number"] {
     inset 0 0 9px 9px rgb(32 32 32 / 0.3);
 }
 
+.timer-display {
+  transition:
+    opacity 0.5s linear,
+    transform 1s linear;
+
+  &.scale-time {
+    transform: scale(1.3);
+  }
+
+  &.end-time {
+    opacity: 0.3;
+  }
+}
+
 @theme {
   --breakpoint-xs: 25rem;
   --inner-right-corner-shadow: inset 4px 2px 3px azure;

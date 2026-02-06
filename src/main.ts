@@ -120,13 +120,6 @@ const playTimerAudio = () => {
     console.error("There was an issue in playing the audio", e);
   }
 };
-const pauseTimerAudio = () => {
-  try {
-    if (audio && !audio.paused) audio.pause;
-  } catch (e) {
-    console.error("There was an issue in pausing the audio", e);
-  }
-};
 
 const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
@@ -291,9 +284,36 @@ async function startTimer() {
 
 async function timesUp(currentTime: number) {
   eventsEnabled = !eventsEnabled;
+  pauseTimerBtn.disabled = true;
+  pauseTimerBtn.setAttribute("hidden", "");
+  restartTimerBtn.disabled = true;
+  restartTimerBtn.setAttribute("hidden", "");
   playTimerAudio();
-  await sleep(4000);
-  pauseTimerAudio();
+  timerDisplay.classList.add("scale-time");
+  timerDisplay.classList.add("end-time");
+  await sleep(550);
+  timerDisplay.classList.remove("end-time");
+  await sleep(550);
+  timerDisplay.classList.add("end-time");
+  await sleep(550);
+  timerDisplay.classList.remove("end-time");
+  await sleep(550);
+  timerDisplay.classList.add("end-time");
+  await sleep(550);
+  timerDisplay.classList.remove("end-time");
+  playTimerAudio();
+  timerDisplay.classList.add("end-time");
+  await sleep(550);
+  timerDisplay.classList.remove("end-time");
+  await sleep(550);
+  timerDisplay.classList.add("end-time");
+  await sleep(550);
+  timerDisplay.classList.remove("scale-time");
+  timerDisplay.classList.remove("end-time");
+  await sleep(550);
+  timerDisplay.classList.add("end-time");
+  await sleep(550);
+  timerDisplay.classList.remove("end-time");
   secondsRemaining = currentTime * 60;
   eventsEnabled = !eventsEnabled;
   restartTimer();
